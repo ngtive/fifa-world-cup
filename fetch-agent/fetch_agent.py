@@ -24,6 +24,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from google.genai.errors import ClientError
 
 from models import WorldCupData
 
@@ -124,6 +125,31 @@ RAW DATA:
 # ── Helpers ─────────────────────────────────────────────────────────
 
 
+def get_retry_after(err: ClientError) -> int | None:
+    """Extract recommended wait seconds from a 429 error."""
+    # Check Retry-After header
+    if hasattr(err, "response") and err.response is not None:
+        val = err.response.headers.get("Retry-After")
+        if val is not None:
+            try:
+                return int(val)
+            except ValueError:
+                pass
+    # Check error details from the API response body
+    try:
+        body = err.response.json()
+        for detail in (body.get("error") or body).get("details", []):
+            delay = detail.get("retryDelay") or detail.get("retry_delay")
+            if delay:
+                import re
+                match = re.search(r"(\d+)s", str(delay))
+                if match:
+                    return int(match.group(1))
+    except Exception:
+        pass
+    return None
+
+
 def get_api_key() -> str:
     load_dotenv()
     key = os.environ.get("GEMINI_API_KEY")
@@ -139,15 +165,22 @@ def step1_grounding(client: genai.Client) -> str:
     """Step 1: Use Gemini + Google Search to fetch real-time tournament data."""
     print("[Step 1/2] Fetching live data via Google Search grounding...")
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=GROUNDING_PROMPT,
-        config=types.GenerateContentConfig(
-            tools=[types.Tool(google_search=types.GoogleSearch())],
-            temperature=0.2,
-            max_output_tokens=MAX_OUTPUT_TOKENS,
-        ),
-    )
+    try:
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=GROUNDING_PROMPT,
+            config=types.GenerateContentConfig(
+                tools=[types.Tool(google_search=types.GoogleSearch())],
+                temperature=0.2,
+                max_output_tokens=MAX_OUTPUT_TOKENS,
+            ),
+        )
+    except ClientError as e:
+        if e.code == 429:
+            wait = get_retry_after(e) or 60
+            print(f"  Rate limited (429). Retry after ~{wait}s", file=sys.stderr)
+            sys.exit(1)
+        raise
 
     text = response.text
     if not text:
@@ -173,16 +206,23 @@ def step2_structured(client: genai.Client, raw_data: str) -> WorldCupData:
 
     prompt = STRUCTURED_PROMPT_TEMPLATE.format(raw_data=raw_data)
 
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt,
-        config=types.GenerateContentConfig(
-            response_mime_type="application/json",
-            response_schema=WorldCupData,
-            temperature=0.0,
-            max_output_tokens=MAX_OUTPUT_TOKENS,
-        ),
-    )
+    try:
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=WorldCupData,
+                temperature=0.0,
+                max_output_tokens=MAX_OUTPUT_TOKENS,
+            ),
+        )
+    except ClientError as e:
+        if e.code == 429:
+            wait = get_retry_after(e) or 60
+            print(f"  Rate limited (429). Retry after ~{wait}s", file=sys.stderr)
+            sys.exit(1)
+        raise
 
     parsed: WorldCupData | None = response.parsed
     if parsed is None:
