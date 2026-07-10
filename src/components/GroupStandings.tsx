@@ -15,7 +15,7 @@ function FormBubble({ result }: { result: string }) {
   };
   return (
     <span
-      className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold border ${
+      className={`inline-flex items-center justify-center w-4 h-4 rounded-full text-[8px] font-bold border ${
         colors[result] || colors.D
       }`}
     >
@@ -47,106 +47,127 @@ export default function GroupStandings({ groups, standings, teams }: Props) {
     .sort((a, b) => a.group.localeCompare(b.group));
 
   return (
-    <div className="flex gap-4">
-      {groupsWithStandings.map((g) => (
-        <div
-          key={g.group}
-          className="gsap-fade-in flex-shrink-0 w-64 bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl overflow-hidden hover:border-slate-600 transition-all duration-300"
-        >
-          <div className="bg-gradient-to-r from-slate-700/50 to-slate-800/50 px-4 py-3 border-b border-slate-700/50">
-            <h3 className="text-sm font-bold text-white tracking-wider">Group {g.group}</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-slate-700/30">
-                  <th className="text-left px-3 py-2 text-slate-500 font-medium">#</th>
-                  <th className="text-left px-3 py-2 text-slate-500 font-medium">Team</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">P</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">W</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">D</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">L</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">GD</th>
-                  <th className="text-center px-2 py-2 text-slate-500 font-medium">Pts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {g.standings
-                  .sort((a, b) => b.points - a.points || b.goal_difference - a.goal_difference)
-                  .map((s, idx) => {
-                    const qStatus = qualificationStatus(s.team, teams);
-                    return (
-                      <tr
-                        key={s.team}
-                        className={`border-b border-slate-700/20 hover:bg-slate-700/20 transition-colors ${
-                          idx === 0
-                            ? "bg-emerald-500/5"
-                            : idx === g.standings.length - 1
-                            ? "bg-red-500/5"
-                            : ""
-                        }`}
-                      >
-                        <td className="px-3 py-2.5 text-slate-400 font-medium">{idx + 1}</td>
-                        <td className="px-3 py-2.5">
-                          <div className="flex items-center gap-2">
-                            {getFlagUrl(s.team) ? (
-                              <img
-                                src={getFlagUrl(s.team)}
-                                alt=""
-                                className="w-5 h-3.5 rounded-sm object-cover flex-shrink-0"
-                                loading="lazy"
-                              />
-                            ) : null}
-                            <span className="text-slate-200 font-medium truncate max-w-[80px]">
-                              {s.team}
-                            </span>
-                            {qStatus === "qualified" && (
-                              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-                                Q
-                              </span>
-                            )}
-                            {qStatus === "eliminated" && (
-                              <span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded">
-                                E
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="text-center px-2 py-2.5 text-slate-300">{s.played}</td>
-                        <td className="text-center px-2 py-2.5 text-emerald-400">{s.wins}</td>
-                        <td className="text-center px-2 py-2.5 text-slate-400">{s.draws}</td>
-                        <td className="text-center px-2 py-2.5 text-red-400">{s.losses}</td>
-                        <td
-                          className={`text-center px-2 py-2.5 font-semibold ${
-                            s.goal_difference > 0
-                              ? "text-emerald-400"
-                              : s.goal_difference < 0
-                              ? "text-red-400"
-                              : "text-slate-400"
-                          }`}
-                        >
-                          {s.goal_difference > 0 ? "+" : ""}
-                          {s.goal_difference}
-                        </td>
-                        <td className="text-center px-2 py-2.5 font-bold text-gold-400">{s.points}</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
-          </div>
-          {g.standings.length > 0 && (
-            <div className="px-3 py-2 border-t border-slate-700/30 flex gap-1 items-center">
-              <span className="text-[10px] text-slate-500 mr-1">Form:</span>
-              {getForm(g.standings[0].team, standings)
-                .split("")
-                .map((r, i) => (
-                  <FormBubble key={i} result={r} />
-                ))}
-            </div>
-          )}
+    <div className="scroll-panel-wide">
+      <div className="flex flex-col h-full px-8">
+        <div className="shrink-0 py-4">
+          <h2 className="text-2xl font-bold text-white mb-1">Group Standings</h2>
+          <p className="text-sm text-slate-500">
+            Groups A through L
+          </p>
         </div>
-      ))}
+
+        <div className="flex-1 overflow-y-auto hide-scrollbar py-2">
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+            {groupsWithStandings.map((g) => {
+              const sortedStandings = [...g.standings]
+                .sort((a, b) => b.points - a.points || b.goal_difference - a.goal_difference);
+              const topQualified = qualificationStatus(sortedStandings[0]?.team, teams) === "qualified";
+              const bottomEliminated = qualificationStatus(sortedStandings[sortedStandings.length - 1]?.team, teams) === "eliminated";
+
+              const accentGradient = topQualified
+                ? "from-emerald-500/80 to-emerald-500/20"
+                : bottomEliminated
+                ? "from-red-500/80 to-red-500/20"
+                : "from-slate-500/80 to-slate-500/20";
+              return (
+                <div
+                  key={g.group}
+                  className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300"
+                >
+                  <div className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b ${accentGradient}`} />
+                  <div>
+                    <div className="pl-4 pr-3 py-2.5 border-b border-slate-700/30">
+                      <h3 className="text-sm font-bold text-white tracking-wider">Group {g.group}</h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-[11px]">
+                        <thead>
+                          <tr className="border-b border-slate-700/20">
+                            <th className="text-left pl-4 pr-1 py-1.5 text-slate-500 font-medium">#</th>
+                            <th className="text-left px-1 py-1.5 text-slate-500 font-medium">Team</th>
+                            <th className="text-center px-1 py-1.5 text-slate-500 font-medium">P</th>
+                            <th className="text-center px-1 py-1.5 text-slate-500 font-medium">W</th>
+                            <th className="text-center px-1 py-1.5 text-slate-500 font-medium">D</th>
+                            <th className="text-center px-1 py-1.5 text-slate-500 font-medium">L</th>
+                            <th className="text-center px-1 py-1.5 text-slate-500 font-medium">GD</th>
+                            <th className="text-center pr-3 pl-1 py-1.5 text-slate-500 font-medium">Pts</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {sortedStandings.map((s, idx) => {
+                            const qStatus = qualificationStatus(s.team, teams);
+                            return (
+                              <tr
+                                key={s.team}
+                                className={`border-b border-slate-700/15 hover:bg-slate-700/15 transition-colors ${
+                                  idx === 0
+                                    ? "bg-emerald-500/5"
+                                    : idx === sortedStandings.length - 1
+                                    ? "bg-red-500/5"
+                                    : ""
+                                }`}
+                              >
+                                <td className="pl-4 pr-1 py-2 text-slate-400 font-medium">{idx + 1}</td>
+                                <td className="px-1 py-2">
+                                  <div className="flex items-center gap-1.5">
+                                    {getFlagUrl(s.team) ? (
+                                      <img
+                                        src={getFlagUrl(s.team)}
+                                        alt=""
+                                        className="w-4 h-3 rounded-sm object-cover flex-shrink-0"
+                                        loading="lazy"
+                                      />
+                                    ) : null}
+                                    <span className="text-slate-200 font-medium truncate max-w-[70px] text-[11px]">
+                                      {s.team}
+                                    </span>
+                                    {qStatus === "qualified" && (
+                                      <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1 py-0.5 rounded">Q</span>
+                                    )}
+                                    {qStatus === "eliminated" && (
+                                      <span className="text-[9px] font-bold text-red-400 bg-red-500/10 px-1 py-0.5 rounded">E</span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="text-center px-1 py-2 text-slate-300">{s.played}</td>
+                                <td className="text-center px-1 py-2 text-emerald-400">{s.wins}</td>
+                                <td className="text-center px-1 py-2 text-slate-400">{s.draws}</td>
+                                <td className="text-center px-1 py-2 text-red-400">{s.losses}</td>
+                                <td
+                                  className={`text-center px-1 py-2 font-semibold ${
+                                    s.goal_difference > 0
+                                      ? "text-emerald-400"
+                                      : s.goal_difference < 0
+                                      ? "text-red-400"
+                                      : "text-slate-400"
+                                  }`}
+                                >
+                                  {s.goal_difference > 0 ? "+" : ""}{s.goal_difference}
+                                </td>
+                                <td className="text-center pr-3 pl-1 py-2 font-bold text-amber-400">{s.points}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    {sortedStandings.length > 0 && (
+                      <div className="pl-4 pr-3 py-1.5 border-t border-slate-700/20 flex gap-1 items-center">
+                        <span className="text-[9px] text-slate-500 mr-0.5">Form:</span>
+                        {getForm(sortedStandings[0].team, standings)
+                          .split("")
+                          .map((r, i) => (
+                            <FormBubble key={i} result={r} />
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

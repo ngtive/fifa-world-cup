@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Trophy, Calendar, LayoutGrid, BarChart3, MapPin, Swords } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import data from "./data";
 import { useGsapScrollAnimations } from "./hooks/useGsapScrollAnimations";
 import HeroSection from "./components/HeroSection";
@@ -11,6 +11,7 @@ import PlayerInsights from "./components/PlayerInsights";
 import VenueInsights from "./components/VenueInsights";
 import BracketView from "./components/BracketView";
 import ScrollIndicator from "./components/ScrollIndicator";
+
 import type { FC } from "react";
 
 const SectionHeader: FC<{
@@ -96,51 +97,24 @@ function App() {
       </div>
 
       {/* Panel 4: Matches Hub */}
-      <div className="scroll-panel-wide">
-        <div className="px-8 pt-8">
-          <SectionHeader icon={Calendar} title="Matches Hub" subtitle="Completed and upcoming fixtures" />
-        </div>
-        <div className="px-8">
-          <MatchesHub prevGames={prev_games} nextGames={next_games} weather={weather} referees={referees} />
-        </div>
-      </div>
+      <MatchesHub prevGames={prev_games} nextGames={next_games} weather={weather} referees={referees} />
 
       {/* Panel 5: Group Standings */}
-      <div className="scroll-panel-wide">
-        <div className="px-8 pt-8">
-          <SectionHeader icon={LayoutGrid} title="Group Standings" subtitle="Groups A through L" />
-        </div>
-        <div className="flex gap-4 overflow-x-auto hide-scrollbar px-8 pb-8">
-          <GroupStandings groups={groups} standings={data.standings} teams={teams} />
-        </div>
-      </div>
+      <GroupStandings groups={groups} standings={data.standings} teams={teams} />
 
       {/* Panel 6: Player Insights */}
-      <div className="scroll-panel">
-        <SectionHeader icon={Trophy} title="Player & Team Insights" subtitle="Scorers, assists, injuries & suspensions" />
-        <PlayerInsights
-          topScorers={top_scorers}
-          topAssists={top_assists}
-          injuries={injuries}
-          suspensions={suspensions}
-        />
-      </div>
+      <PlayerInsights
+        topScorers={top_scorers}
+        topAssists={top_assists}
+        injuries={injuries}
+        suspensions={suspensions}
+      />
 
       {/* Panel 7: Bracket */}
-      <div className="scroll-panel-wide">
-        <div className="px-8 pt-8">
-          <SectionHeader icon={Swords} title="Tournament Bracket" subtitle="Knockout tree visualization" />
-        </div>
-        <div className="px-8 pb-8">
-          <BracketView bracketTree={tournament_bracket_tree} scrollRef={scrollRef} />
-        </div>
-      </div>
+      <BracketView bracketTree={tournament_bracket_tree} scrollRef={scrollRef} />
 
       {/* Panel 8: Venues */}
-      <div className="scroll-panel">
-        <SectionHeader icon={MapPin} title="Host Cities & Venues" subtitle="Stadiums, weather & upcoming matches" />
-        <VenueInsights stadiums={stadiums} hostCities={host_cities} weather={weather} />
-      </div>
+      <VenueInsights stadiums={stadiums} hostCities={host_cities} weather={weather} />
 
       <ScrollIndicator scrollRef={scrollRef} panelCount={8} />
     </div>
