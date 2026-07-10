@@ -61,28 +61,28 @@ export default function HeroSection({
   }, []);
 
   const statItems = [
-    { icon: Trophy, label: "Goals", value: statistics.total_goals, color: "text-gold-400" },
-    { icon: BarChart3, label: "Avg/Match", value: statistics.average_goals.toFixed(2), color: "text-emerald-400" },
-    { icon: Users, label: "Attendance", value: statistics.total_attendance.toLocaleString(), color: "text-blue-400" },
-    { icon: Trophy, label: "Matches", value: `${statistics.completed_matches}/${statistics.total_matches}`, color: "text-emerald-400" },
+    { icon: Trophy, label: "Goals", value: statistics.total_goals, color: "text-gold" },
+    { icon: BarChart3, label: "Avg/Match", value: statistics.average_goals.toFixed(2), color: "text-gold" },
+    { icon: Users, label: "Attendance", value: statistics.total_attendance.toLocaleString(), color: "text-white/60" },
+    { icon: Trophy, label: "Matches", value: `${statistics.completed_matches}/${statistics.total_matches}`, color: "text-white/60" },
   ];
 
   return (
     <div className="scroll-panel items-center justify-center text-center">
-      <div className="max-w-4xl mx-auto flex flex-col items-center gap-8">
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-gold-500/20 to-emerald-500/20 border border-gold-500/30">
-          <Trophy size={48} className="text-gold-400" />
+      <div className="max-w-4xl mx-auto flex flex-col items-center gap-10">
+        <div className="p-5 rounded-2xl bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/20">
+          <Trophy size={52} className="text-gold" />
         </div>
 
         <div ref={titleRef}>
-          <h1 className="text-5xl sm:text-7xl font-black text-white tracking-tight leading-tight">
-            {tournamentName} <span className="text-gold-400">{year}</span>
+          <h1 className="text-6xl sm:text-[5.5rem] font-black text-white tracking-tighter leading-none">
+            {tournamentName} <span className="text-gold">{year}</span>
           </h1>
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <span className="text-sm font-semibold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+          <div className="flex items-center justify-center gap-3 mt-5">
+            <span className="text-sm font-semibold text-gold bg-gold/10 px-3 py-1 rounded-full border border-gold/20">
               {stage}
             </span>
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-white/30">
               June 11 — July 19, {year}
             </span>
           </div>
@@ -94,10 +94,10 @@ export default function HeroSection({
             return (
               <div
                 key={item.label}
-                className="stat-pill flex items-center gap-2 bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-xl px-4 py-2.5"
+                className="stat-pill flex items-center gap-2 bg-charcoal-700 border border-charcoal-600 rounded-xl px-5 py-3"
               >
                 <Icon size={16} className={item.color} />
-                <span className="text-xs text-slate-400">{item.label}</span>
+                <span className="text-xs text-white/40">{item.label}</span>
                 <span className="text-sm font-bold text-white">{item.value}</span>
               </div>
             );
@@ -105,7 +105,7 @@ export default function HeroSection({
         </div>
 
         <div className="w-full">
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-white/25 mb-4">
             Participating Teams
           </p>
           <div
@@ -119,7 +119,7 @@ export default function HeroSection({
                   key={team}
                   className="flag-card flex flex-col items-center gap-1.5 flex-shrink-0"
                 >
-                  <div className="w-12 h-9 rounded-md overflow-hidden border border-slate-700/50 bg-slate-800/40 flex items-center justify-center">
+                  <div className="w-12 h-9 rounded-md overflow-hidden border border-charcoal-600 bg-charcoal-800 flex items-center justify-center">
                     {flagUrl ? (
                       <img
                         src={flagUrl}
@@ -131,7 +131,7 @@ export default function HeroSection({
                       <span className="text-lg">🏳️</span>
                     )}
                   </div>
-                  <span className="text-[10px] text-slate-500 max-w-[60px] truncate">
+                  <span className="text-[10px] text-white/30 max-w-[60px] truncate">
                     {team}
                   </span>
                 </div>
