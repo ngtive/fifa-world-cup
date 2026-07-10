@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface Props {
   bracketTree: BracketNode;
   scrollRef: React.RefObject<HTMLDivElement | null>;
+  horizontalTween?: gsap.core.Tween | null;
 }
 
 interface PositionedNode {
@@ -184,7 +185,7 @@ function MatchCard({ node }: { node: BracketNode }) {
   );
 }
 
-export default function BracketView({ bracketTree, scrollRef }: Props) {
+export default function BracketView({ bracketTree, scrollRef, horizontalTween }: Props) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const maxDepth = useMemo(() => getDepth(bracketTree), [bracketTree]);
@@ -212,6 +213,10 @@ export default function BracketView({ bracketTree, scrollRef }: Props) {
     if (!scroller) return;
 
     const ctx = gsap.context(() => {
+      const scrollConfig = horizontalTween
+        ? { containerAnimation: horizontalTween, start: "left 85%" }
+        : { scroller, start: "left 85%" };
+
       gsap.fromTo(
         el,
         { opacity: 0 },
@@ -221,8 +226,7 @@ export default function BracketView({ bracketTree, scrollRef }: Props) {
           ease: "power2.out",
           scrollTrigger: {
             trigger: el,
-            scroller,
-            start: "left 85%",
+            ...scrollConfig,
             toggleActions: "play none none none",
           },
         },
@@ -239,8 +243,9 @@ export default function BracketView({ bracketTree, scrollRef }: Props) {
           delay: i * 0.02,
           scrollTrigger: {
             trigger: el,
-            scroller,
-            start: "left 80%",
+            ...(horizontalTween
+              ? { containerAnimation: horizontalTween, start: "left 80%" }
+              : { scroller, start: "left 80%" }),
             toggleActions: "play none none none",
           },
         });
@@ -258,8 +263,9 @@ export default function BracketView({ bracketTree, scrollRef }: Props) {
           stagger: 0.06,
           scrollTrigger: {
             trigger: el,
-            scroller,
-            start: "left 80%",
+            ...(horizontalTween
+              ? { containerAnimation: horizontalTween, start: "left 80%" }
+              : { scroller, start: "left 80%" }),
             toggleActions: "play none none none",
           },
         },
@@ -267,7 +273,7 @@ export default function BracketView({ bracketTree, scrollRef }: Props) {
     }, el);
 
     return () => ctx.revert();
-  }, []);
+  }, [horizontalTween]);
 
   return (
     <div className="scroll-panel-wide">

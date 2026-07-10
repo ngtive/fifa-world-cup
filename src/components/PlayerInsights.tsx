@@ -19,9 +19,9 @@ export default function PlayerInsights({ topScorers, topAssists, injuries, suspe
         </div>
 
         <div className="flex-1 overflow-y-auto hide-scrollbar py-2">
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar scroll-snap-x pb-2">
             {/* Top Scorers */}
-            <div className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
+            <div className="flex-shrink-0 w-64 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-amber-500/80 to-amber-500/20" />
               <div className="pl-4 pr-3 py-3">
                 <div className="flex items-center gap-2 mb-3">
@@ -54,7 +54,7 @@ export default function PlayerInsights({ topScorers, topAssists, injuries, suspe
             </div>
 
             {/* Top Assists */}
-            <div className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
+            <div className="flex-shrink-0 w-64 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-blue-500/80 to-blue-500/20" />
               <div className="pl-4 pr-3 py-3">
                 <div className="flex items-center gap-2 mb-3">
@@ -87,7 +87,7 @@ export default function PlayerInsights({ topScorers, topAssists, injuries, suspe
             </div>
 
             {/* Injuries */}
-            <div className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
+            <div className="flex-shrink-0 w-64 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-red-500/80 to-red-500/20" />
               <div className="pl-4 pr-3 py-3">
                 <div className="flex items-center gap-2 mb-3">
@@ -122,7 +122,7 @@ export default function PlayerInsights({ topScorers, topAssists, injuries, suspe
             </div>
 
             {/* Suspensions */}
-            <div className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
+            <div className="flex-shrink-0 w-64 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-rose-500/80 to-rose-500/20" />
               <div className="pl-4 pr-3 py-3">
                 <div className="flex items-center gap-2 mb-3">

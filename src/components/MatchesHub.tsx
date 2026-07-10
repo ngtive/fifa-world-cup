@@ -14,7 +14,7 @@ function CompletedMatchCard({ match }: { match: PrevGame }) {
   const isHomeWinner = match.winner === match.home_team;
   const isDraw = match.home_score === match.away_score;
   return (
-    <div className="flex-shrink-0 w-72 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
+    <div className="flex-shrink-0 w-72 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300">
       <div className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b ${
         isDraw ? "from-slate-500/80 to-slate-500/20" : "from-emerald-500/80 to-emerald-500/20"
       }`} />
@@ -90,7 +90,7 @@ function UpcomingMatchCard({ match, weather, referees }: { match: NextGame; weat
   const w = findWeather(match, weather);
   const ref = findReferee(match, referees);
   return (
-    <div className="flex-shrink-0 w-72 relative overflow-hidden rounded-xl border border-emerald-500/30 bg-slate-800/40 hover:border-emerald-500/50 transition-all duration-300">
+    <div className="flex-shrink-0 w-72 scroll-snap-start relative overflow-hidden rounded-xl border border-emerald-500/30 bg-slate-800/40 hover:border-emerald-500/50 transition-all duration-300">
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-emerald-500/80 to-emerald-500/20" />
       <div className="pl-4 pr-3 py-2.5">
         <div className="flex items-center justify-between mb-2">
@@ -203,7 +203,7 @@ export default function MatchesHub({ prevGames, nextGames, weather, referees }: 
               Upcoming ({nextGames.length})
             </button>
           </div>
-          <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar scroll-snap-x pb-2">
             {tab === "completed"
               ? [...prevGames].reverse().map((m) => <CompletedMatchCard key={m.external_id} match={m} />)
               : nextGames.map((m) => (

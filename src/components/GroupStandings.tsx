@@ -57,7 +57,7 @@ export default function GroupStandings({ groups, standings, teams }: Props) {
         </div>
 
         <div className="flex-1 overflow-y-auto hide-scrollbar py-2">
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar scroll-snap-x pb-2">
             {groupsWithStandings.map((g) => {
               const sortedStandings = [...g.standings]
                 .sort((a, b) => b.points - a.points || b.goal_difference - a.goal_difference);
@@ -72,7 +72,7 @@ export default function GroupStandings({ groups, standings, teams }: Props) {
               return (
                 <div
                   key={g.group}
-                  className="flex-shrink-0 w-64 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300"
+                  className="flex-shrink-0 w-64 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-slate-600 transition-all duration-300"
                 >
                   <div className={`absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b ${accentGradient}`} />
                   <div>

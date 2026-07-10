@@ -1,7 +1,11 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BarChart3 } from "lucide-react";
 import data from "./data";
 import { useGsapScrollAnimations } from "./hooks/useGsapScrollAnimations";
+
+gsap.registerPlugin(ScrollTrigger);
 import HeroSection from "./components/HeroSection";
 import GameTimeline from "./components/GameTimeline";
 import StatsOverview from "./components/StatsOverview";
@@ -32,7 +36,36 @@ const SectionHeader: FC<{
 
 function App() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [horizontalTween, setHorizontalTween] = useState<gsap.core.Tween | null>(null);
   useGsapScrollAnimations(scrollRef);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      const panels = gsap.utils.toArray<HTMLElement>(".horizontal-track > *");
+      if (!panels.length) return;
+
+      const tween = gsap.to(panels, {
+        xPercent: -100 * (panels.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".horizontal-container",
+          scroller: el,
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: () => `+=${(panels.length - 1) * 100}%`,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      setHorizontalTween(tween);
+    }, el);
+
+    return () => ctx.revert();
+  }, []);
 
   const {
     tournament,
@@ -96,27 +129,27 @@ function App() {
         )}
       </div>
 
-      {/* Panel 4: Matches Hub */}
-      <MatchesHub prevGames={prev_games} nextGames={next_games} weather={weather} referees={referees} />
+      {/* Panels 4-8: Horizontal scroll section */}
+      <div className="horizontal-container">
+        <div className="horizontal-track">
+          <MatchesHub prevGames={prev_games} nextGames={next_games} weather={weather} referees={referees} />
 
-      {/* Panel 5: Group Standings */}
-      <GroupStandings groups={groups} standings={data.standings} teams={teams} />
+          <GroupStandings groups={groups} standings={data.standings} teams={teams} />
 
-      {/* Panel 6: Player Insights */}
-      <PlayerInsights
-        topScorers={top_scorers}
-        topAssists={top_assists}
-        injuries={injuries}
-        suspensions={suspensions}
-      />
+          <PlayerInsights
+            topScorers={top_scorers}
+            topAssists={top_assists}
+            injuries={injuries}
+            suspensions={suspensions}
+          />
 
-      {/* Panel 7: Bracket */}
-      <BracketView bracketTree={tournament_bracket_tree} scrollRef={scrollRef} />
+          <BracketView bracketTree={tournament_bracket_tree} scrollRef={scrollRef} horizontalTween={horizontalTween} />
 
-      {/* Panel 8: Venues */}
-      <VenueInsights stadiums={stadiums} hostCities={host_cities} weather={weather} />
+          <VenueInsights stadiums={stadiums} hostCities={host_cities} weather={weather} />
+        </div>
+      </div>
 
-      <ScrollIndicator scrollRef={scrollRef} panelCount={8} />
+      <ScrollIndicator scrollRef={scrollRef} panelCount={8} horizontalTween={horizontalTween} />
     </div>
   );
 }

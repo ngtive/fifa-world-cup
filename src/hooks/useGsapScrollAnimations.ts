@@ -25,7 +25,7 @@ export function useGsapScrollAnimations(
             scrollTrigger: {
               trigger: el,
               scroller,
-              start: "left 85%",
+              start: "top 85%",
               toggleActions: "play none none none",
             },
           },

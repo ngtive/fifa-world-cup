@@ -19,14 +19,14 @@ export default function VenueInsights({ stadiums, hostCities, weather }: Props) 
         </div>
 
         <div className="flex-1 overflow-y-auto hide-scrollbar py-2">
-          <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto hide-scrollbar scroll-snap-x pb-2">
             {hostCities.map((city) => {
               const stadium = stadiums.find((s) => s.city === city.city);
               const w = weather.find((wth) => wth.city === city.city);
               return (
                 <div
                   key={city.city}
-                  className="flex-shrink-0 w-72 relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-emerald-500/30 transition-all duration-300"
+                  className="flex-shrink-0 w-72 scroll-snap-start relative overflow-hidden rounded-xl border border-slate-700/50 bg-slate-800/40 hover:border-emerald-500/30 transition-all duration-300"
                 >
                   <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-emerald-500/80 to-emerald-500/20" />
                   <div className="pl-4 pr-3 py-3">
