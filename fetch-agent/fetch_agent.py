@@ -29,7 +29,7 @@ from models import WorldCupData
 
 # ── Config ──────────────────────────────────────────────────────────
 
-MODEL = "gemini-2.5-flash"
+MODEL = "gemini-3.5-flash"
 OUTPUT_DIR = Path(__file__).parent / "output"
 OUTPUT_FILE = OUTPUT_DIR / "worldcup_data.json"
 MAX_OUTPUT_TOKENS = 65536
